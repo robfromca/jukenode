@@ -1,0 +1,9 @@
+This is a tiny expirimental nugget to build a webapp to control an instance of iTunes
+running on a Mac.
+
+Usage:
+
+node start.js
+
+Fires up the server. Then crippling bugs keep it from doing anything useful. The hope
+is that this will change soon.

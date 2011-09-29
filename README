@@ -5,5 +5,16 @@ Usage:
 
 node start.js
 
-Fires up the server. Then crippling bugs keep it from doing anything useful. The hope
-is that this will change soon.
+Fires up the server. Commands:
+
+http://localhost:8124/start
+
+Plays your current iTunes playlist.
+
+http://localhost:8124/stop
+
+Stops iTunes
+
+http://localhost:8124/list
+
+Attempts to use an applescript to list a playlist name that most likely doesnt' exist on your system since it's hardcoded for now.

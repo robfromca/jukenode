@@ -5,26 +5,28 @@ var util = require('util'),
 
 function runApplescript(osascript, inline, next) {
     if (inline) {
-	child = exec('osascript -e \'tell application "iTunes"\' -e "' + inline + '" -e "end tell"',
+	child = exec('osascript -e \'tell application "iTunes"\' -e "' + osascript + '" -e "end tell"',
 		     function (error, stdout, stderr) {
 			 if (error !== null) {
-			     data =  'Error: ' + error;
+			     next('NodeError: ' + error);
 			 } else {
-			     data = stdout;
+			     next(stdout);
 			 }
-			 next(data);
 		     });
     } else {
 	child = exec('osascript ' + osascript,
 		     function(error, stdout, stderr) {
 			 if (error !== null) {
-			     data =  'Error: ' + error;
+			     next('NodeError: ' + error);
 			 } else {
-			     data = stdout;
+			     next(stdout);
 			 }
-			 next(data);
 		     });
     }
+}
+
+function endResponse(response, data) {
+    response.end(data);
 }
 
 http.createServer(function(request, response) {
@@ -32,16 +34,19 @@ http.createServer(function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     switch (urldata['pathname']) {
     case '/start':
-	runApplescript('play', false, response.write);
-	response.end('Started\n')
+	data = runApplescript('play', true, function(data) {
+	    response.end(data);
+	});
 	break;
     case '/stop':
-	runApplescript('pause', false, response.write);
-	response.end('Stopping\n')
+	data = runApplescript('pause', true, function(data) {
+	    response.end(data);
+	});
 	break;
     case '/list':
-	runApplescript('listTracks.scpt', true, response.write);
-	response.end('Listed');
+	data = runApplescript('listTracks.scpt', false, function(data) {
+	    response.end(data);
+	});
 	break;
     }
 }).listen(8124);

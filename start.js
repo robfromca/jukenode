@@ -3,8 +3,19 @@ var util = require('util'),
     exec = require('child_process').exec,
     child;
 
+function runApplescriptFile(osascript, args, next) {
+    commandLine = 'osascript ' + osascript + " '" + args + "'";
+    exec(commandLine,
+		     function(error, stdout, stderr) {
+			 if (error !== null) {
+			     next('NodeError: ' + error + "\nargs:[" + commandLine + "]");
+			 } else {
+			     next(stdout);
+			 }
+		     });
+}
+
 function runApplescript(osascript, inline, next) {
-    if (inline) {
 	child = exec('osascript -e \'tell application "iTunes"\' -e "' + osascript + '" -e "end tell"',
 		     function (error, stdout, stderr) {
 			 if (error !== null) {
@@ -13,20 +24,6 @@ function runApplescript(osascript, inline, next) {
 			     next(stdout);
 			 }
 		     });
-    } else {
-	child = exec('osascript ' + osascript,
-		     function(error, stdout, stderr) {
-			 if (error !== null) {
-			     next('NodeError: ' + error);
-			 } else {
-			     next(stdout);
-			 }
-		     });
-    }
-}
-
-function endResponse(response, data) {
-    response.end(data);
 }
 
 http.createServer(function(request, response) {
@@ -34,17 +31,20 @@ http.createServer(function(request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     switch (urldata['pathname']) {
     case '/start':
-	data = runApplescript('play', true, function(data) {
+	data = runApplescript('play', function(data) {
 	    response.end(data);
 	});
 	break;
     case '/stop':
-	data = runApplescript('pause', true, function(data) {
+	data = runApplescript('pause', function(data) {
 	    response.end(data);
 	});
 	break;
     case '/list':
-	data = runApplescript('listTracks.scpt', false, function(data) {
+	args = urldata['query']['name'];
+	// sanitize input
+	args = args.replace(/[^A-Za-z-_0-9 \-]/g, "")
+	data = runApplescriptFile('listTracks.scpt', args, function(data) {
 	    response.end(data);
 	});
 	break;

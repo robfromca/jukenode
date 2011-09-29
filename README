@@ -15,6 +15,6 @@ http://localhost:8124/stop
 
 Stops iTunes
 
-http://localhost:8124/list
+http://localhost:8124/list?name=[playlist]
 
-Attempts to use an applescript to list a playlist name that most likely doesnt' exist on your system since it's hardcoded for now.
+Shows the contents of the playlist named [playlist] as a plain text list.

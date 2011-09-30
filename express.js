@@ -47,6 +47,53 @@ app.get('/', function(request, response) {
     response.render('root.jade');
 });
 
+app.get('/status.json', function(req,res) {
+    res.contentType('application/json');
+    runApplescriptFile('status.applescript', '', function(data) {
+	if (data == 'paused') {
+	    res.send({status:"paused"});
+	} else {
+	    item = data.split('\\');
+	    res.send(
+		{id:item[0],
+		 name:item[1],
+		 album:item[2],
+		 artist:item[3],
+		 year:item[4],
+		 bitrate:item[5],
+		 runningtime:item[6],
+		 duration:item[7],
+		 playerstate:item[8],
+		 playerposition:item[9]
+		});
+	}
+    });
+});
+
+app.get('/status', function(req,res) {
+    runApplescriptFile('status.applescript', '', function(data) {
+	if (data == 'paused') {
+	    res.send({status:"paused"});
+	} else {
+	    item = data.split('\\');
+	    status = 
+		{id:item[0],
+		 name:item[1],
+		 album:item[2],
+		 artist:item[3],
+		 year:item[4],
+		 bitrate:item[5],
+		 runningtime:item[6],
+		 duration:item[7],
+		 playerstate:item[8],
+		 playerposition:item[9]
+		};
+	    res.partial('status.jade', status);
+	}
+    });
+});
+
+
 app.get('/songs', function(req,res) {
     res.render('songindex.jade', {locals: {
 	songs:songs.all
@@ -61,12 +108,13 @@ app.get('/playlist/:name', function(req,res) {
 	    item = line_item.split('\\');
 	    songlist.push(
 		{id:item[0],
-			   name:item[1],
-			   album:item[2],
-			   artist:item[3],
-			   year:item[4],
-			   bitrate:item[5],
-			   runningtime:item[6]
+		 name:item[1],
+		 album:item[2],
+		 artist:item[3],
+		 year:item[4],
+		 bitrate:item[5],
+		 runningtime:item[6],
+		 duration:item[7]
 		});
 	});
 	res.render('songindex.jade', {locals: {

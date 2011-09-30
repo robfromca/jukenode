@@ -9,3 +9,10 @@ body {
     border: 1px solid #ddd;
     padding: 1em;
 }
+
+#statusbox {
+    width: 800px;
+    height: 100px;
+    border: 1px solid #ddd;
+    padding: 1em;
+}

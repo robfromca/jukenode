@@ -3,9 +3,20 @@ html
   head
     link(rel='stylesheet', href='/stylesheets.css')
     title JukeNode
+    script(src="/js/zepto.js")
   body
     #main
       h1 Welcome to JukeNode
       p 
         a(href="/stop") Stop iTunes
+      #statusbox
       #container!= body
+    script
+      function updateStatus() {
+        $('#statusbox').load('/status');
+        setTimeout(function(){ updateStatus(); }, 5000);
+      }
+      updateStatus();
+      $(document).ready(function() {
+        setTimeout(function(){ updateStatus(); }, 5000);
+      });

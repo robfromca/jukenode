@@ -1,18 +1,20 @@
-on run argv
-	set stdout to ""
-	tell application "iTunes"
-		set mySongs to get (every track of playlist (item 1 of argv))
-		repeat with a_track in mySongs
-			set stdout to stdout & (database ID of a_track) & "\\" & Â
-				(name of a_track) & "\\" & Â
-				(album of a_track) & "\\" & Â
-				(artist of a_track) & "\\" & Â
-				(year of a_track) & "\\" & Â
-				(bit rate of a_track) & "\\" & Â
-				(time of a_track) & "\\" & Â
-				(duration of a_track) & "\\" & Â
-				"
+property g_stdout : {}
+property field_delim : "\\"
+property line_delim : "
 "
-		end repeat
+on run argv
+	set g_stdout to {}
+	set stdout to a reference to g_stdout
+	tell application "iTunes"
+		set mySongs to get (every file track of playlist (item 1 of argv))
 	end tell
+	using terms from application "iTunes"
+		repeat with a_track in mySongs
+			tell a_track
+				copy {database ID, field_delim, name, field_delim, album, field_delim, artist, field_delim, year, field_delim, bit rate, field_delim, time, line_delim} to the end of stdout
+			end tell
+		end repeat
+		stdout as text
+	end using terms from
+	
 end run

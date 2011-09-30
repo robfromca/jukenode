@@ -8,7 +8,7 @@ var queue = require('./queue.js');
 
 function runApplescriptFile(osascript, args, next) {
     commandLine = 'osascript ' + osascript + " '" + args + "'";
-    exec(commandLine,
+    exec(commandLine, { maxBuffer: 1000*1024}, 
 		     function(error, stdout, stderr) {
 			 if (error !== null) {
 			     next('NodeError: ' + error + "\nargs:[" + commandLine + "]");
@@ -19,7 +19,7 @@ function runApplescriptFile(osascript, args, next) {
 }
 
 function runApplescript(osascript, next) {
-    exec('osascript -e \'tell application "iTunes"\' -e "' + osascript + '" -e "end tell"',
+    exec('osascript -e \'tell application "iTunes"\' -e "' + osascript + '" -e "end tell"', { maxBuffer: 1000*1024 },
 		     function (error, stdout, stderr) {
 			 if (error !== null) {
 			     next('NodeError: ' + error);
@@ -75,7 +75,6 @@ app.get('/status.json', function(req,res) {
 
 app.get('/status', function(req,res) {
     runApplescriptFile('status.applescript', '', function(data) {
-	debugger;
 	if (data.match(/^paused/)) {
 	    status = {playerstate:"paused"};
 	    res.partial('status.jade', status);
@@ -111,6 +110,7 @@ app.get('/playlist/:name', function(req,res) {
 	songlist = [];
 	data.split('\n').forEach(function(line_item) {
 	    item = line_item.split('\\');
+	    debugger;
 	    songlist.push(
 		{id:item[0],
 		 name:item[1],

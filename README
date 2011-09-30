@@ -1,20 +1,20 @@
 This is a tiny expirimental nugget to build a webapp to control an instance of iTunes
-running on a Mac.
+running on a Mac, using Express and Jade, and applescript to control itunes
 
 Usage:
 
-node start.js
+node express.js
 
 Fires up the server. Commands:
 
-http://localhost:8124/start
+http://localhost:4000/playlist/[playlistname]
 
-Plays your current iTunes playlist.
+Display details for all the songs in [playlistname]. There are play links to play that
+specific song.
 
-http://localhost:8124/stop
+http://localhost:4000/stop
 
 Stops iTunes
 
-http://localhost:8124/list?name=[playlist]
 
-Shows the contents of the playlist named [playlist] as a plain text list.
+(express.js is going to get moved into start.js)

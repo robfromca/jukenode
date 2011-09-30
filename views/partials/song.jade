@@ -1,3 +1,8 @@
 h2= song.name
-p
-  a(href='/song/' + song.id) Details
+p #{song.artist} 
+p Album: #{song.album}
+p Artist: #{song.artist}
+p Year: #{song.year}
+p Bit Rate: #{song.bitrate}k/s
+p Running time: #{song.runningtime}
+  a(href='/play/' + song.id) Play #{song.name}

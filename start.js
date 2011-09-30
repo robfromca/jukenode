@@ -44,7 +44,7 @@ http.createServer(function(request, response) {
 	args = urldata['query']['name'];
 	// sanitize input
 	args = args.replace(/[^A-Za-z-_0-9 \-]/g, "")
-	data = runApplescriptFile('listTracks.scpt', args, function(data) {
+	data = runApplescriptFile('listTracks.applescript', args, function(data) {
 	    response.end(data);
 	});
 	break;

@@ -1,0 +1,9 @@
+h1 Playlists:
+#playlists!= partial('partials/playlist', {collection: playlists})
+script
+  $(document).ready(function() {
+    $('.playlist').live('click', function() {
+      $.post('/playlist/' + this.getAttribute('data-playlistid'));
+        });
+      });
+

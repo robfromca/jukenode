@@ -128,6 +128,22 @@ app.get('/playlist/:name', function(req,res) {
     });
 });
 
+app.get('/playlists', function(req,res) {
+    runApplescriptFile('listPlaylists.applescript', '', function(data) {
+	lists = [];
+	data.split('\n').forEach(function(line_item) {
+	    item = line_item.split('\\');
+	    lists.push(
+		{id:item[0],
+		 name:item[1]
+		});
+	});
+	res.render('playlists.jade', {locals: {
+	    playlists:lists
+	}});
+    });
+});
+
 app.post('/play/:id', function(req, res) {
     safe_id = req.params.id.replace(/[^0-9]/g, "")
     playstring = 'play (every track whose database ID is ' + safe_id + ')';

@@ -36,3 +36,6 @@
 ehthumbs.db
 Icon?
 Thumbs.db
+
+# stuff we don't want to check in 
+queue.txt

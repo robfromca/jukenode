@@ -4,6 +4,7 @@ html
     link(rel='stylesheet', href='/stylesheets.css')
     title JukeNode
     script(src="/js/zepto.js")
+    script(type='text/javascript', src='/js/jquery.min.js')
   body
     #main
       h1 Welcome to JukeNode
@@ -14,9 +15,19 @@ html
     script
       function updateStatus() {
         $('#statusbox').load('/status');
-        setTimeout(function(){ updateStatus(); }, 5000);
+        setTimeout(function(){ updateStatus(); }, 500);
       }
       updateStatus();
       $(document).ready(function() {
-        setTimeout(function(){ updateStatus(); }, 5000);
+        setTimeout(function(){ updateStatus(); }, 500);
+      });
+      $(function() {
+              $(".meter > span").each(function() {
+                      $(this)
+                              .data("origWidth", $(this).width())
+                              .width(0)
+                              .animate({
+                                      width: $(this).data("origWidth")
+                              }, 500);
+              });
       });

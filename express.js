@@ -2,6 +2,9 @@ var express = require('express');
 var util = require('util'),
     exec = require('child_process').exec,
     child;
+var sys = require('sys');
+
+var queue = require('./queue.js');
 
 function runApplescriptFile(osascript, args, next) {
     commandLine = 'osascript ' + osascript + " '" + args + "'";
@@ -137,5 +140,17 @@ app.get('/stop', function(req, res) {
     });
 });
 	      
+app.get('/queue/add/:id', function(req, res) {
+	queue.add(req.params.id);
+	res.json("", 204);
+});
+
+app.get('/queue', function(req, res) {
+	res.json(queue.contents());
+});
+
+app.get('/queue/random', function(req, res) {
+	res.json(queue.random());
+});
 
 app.listen(4000);

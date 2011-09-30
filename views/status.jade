@@ -1,3 +1,4 @@
 h2 Currently Playing: #{status.name}
 p by #{status.artist} off the album "#{status.album}"
-p #{status.playerposition}s of #{status.duration}s played
+div(class="meter gray animate")
+ span(style="width: #{status.playerposition/status.duration*100}%")

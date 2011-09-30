@@ -4,12 +4,11 @@ html
     link(rel='stylesheet', href='/stylesheets.css')
     title JukeNode
     script(src="/js/zepto.js")
-    script(type='text/javascript', src='/js/jquery.min.js')
   body
     #main
       h1 Welcome to JukeNode
       p 
-        a(href="/stop") Stop iTunes
+        a(href="#", id="stop") Stop iTunes
       #statusbox
       #container!= body
     script
@@ -20,6 +19,9 @@ html
       updateStatus();
       $(document).ready(function() {
         setTimeout(function(){ updateStatus(); }, 500);
+        $('#stop').click(function() {
+            $.post('/stop');
+        });
       });
       $(function() {
               $(".meter > span").each(function() {

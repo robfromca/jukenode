@@ -1,4 +1,7 @@
-h2 Currently Playing: #{status.name}
-p by #{status.artist} off the album "#{status.album}"
-div(class="meter gray animate")
- span(style="width: #{status.playerposition/status.duration*100}%")
+if status.playerstate == 'paused'
+  h2 Please choose a track to play
+else
+  h2 Currently Playing: #{status.name}
+  p by #{status.artist} off the album "#{status.album}"
+  div(class="meter gray animate")
+   span(style="width: #{status.playerposition/status.duration*100}%")

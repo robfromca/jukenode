@@ -1,2 +1,9 @@
 h1 Songs:
 #songs!= partial('partials/song', {collection: songs})
+script
+  $(document).ready(function() {
+    $('.playsong').live('click', function() {
+      $.post('/play/' + this.getAttribute('data-songid'));
+        });
+      });
+

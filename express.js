@@ -75,8 +75,10 @@ app.get('/status.json', function(req,res) {
 
 app.get('/status', function(req,res) {
     runApplescriptFile('status.applescript', '', function(data) {
-	if (data == 'paused') {
-	    res.send({status:"paused"});
+	debugger;
+	if (data.match(/^paused/)) {
+	    status = {playerstate:"paused"};
+	    res.partial('status.jade', status);
 	} else {
 	    item = data.split('\\');
 	    status = 
@@ -126,7 +128,7 @@ app.get('/playlist/:name', function(req,res) {
     });
 });
 
-app.get('/play/:id', function(req, res) {
+app.post('/play/:id', function(req, res) {
     safe_id = req.params.id.replace(/[^0-9]/g, "")
     playstring = 'play (every track whose database ID is ' + safe_id + ')';
     runApplescript(playstring, function(data) {
@@ -134,7 +136,7 @@ app.get('/play/:id', function(req, res) {
     });
 });
 
-app.get('/stop', function(req, res) {
+app.post('/stop', function(req, res) {
     runApplescript('pause', function(data) {
 	res.render('play.jade');
     });

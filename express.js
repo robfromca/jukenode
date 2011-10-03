@@ -1,35 +1,9 @@
 var express = require('express');
-var util = require('util'),
-    exec = require('child_process').exec,
-    child;
+
 var sys = require('sys');
 
 var queue = require('./queue.js');
-
-function runApplescriptFile(osascript, args, next) {
-    commandLine = 'osascript ' + osascript + " '" + args + "'";
-    exec(commandLine, { maxBuffer: 1000*1024}, 
-		     function(error, stdout, stderr) {
-			 if (error !== null) {
-			     next('NodeError: ' + error + "\nargs:[" + commandLine + "]");
-			 } else {
-			     next(stdout);
-			 }
-		     });
-}
-
-function runApplescript(osascript, next) {
-    exec('osascript -e \'tell application "iTunes"\' -e "' + osascript + '" -e "end tell"', { maxBuffer: 1000*1024 },
-		     function (error, stdout, stderr) {
-			 if (error !== null) {
-			     next('NodeError: ' + error);
-			 } else {
-			     next(stdout);
-			 }
-		     });
-}
-
-
+var musicsource = require ('./itunes.js');
 
 var app = express.createServer();
 
@@ -52,109 +26,53 @@ app.get('/', function(request, response) {
 
 app.get('/status.json', function(req,res) {
     res.contentType('application/json');
-    runApplescriptFile('status.applescript', '', function(data) {
-	if (data == 'paused') {
-	    res.send({status:"paused"});
-	} else {
-	    item = data.split('\\');
-	    res.send(
-		{id:item[0],
-		 name:item[1],
-		 album:item[2],
-		 artist:item[3],
-		 year:item[4],
-		 bitrate:item[5],
-		 runningtime:item[6],
-		 duration:item[7],
-		 playerstate:item[8],
-		 playerposition:item[9]
-		});
-	}
+    musicsource.status(function(data) {
+	res.partial('status.jade', data)
     });
 });
 
 app.get('/status', function(req,res) {
-    runApplescriptFile('status.applescript', '', function(data) {
-	if (data.match(/^paused/)) {
-	    status = {playerstate:"paused"};
-	    res.partial('status.jade', status);
-	} else {
-	    item = data.split('\\');
-	    status = 
-		{id:item[0],
-		 name:item[1],
-		 album:item[2],
-		 artist:item[3],
-		 year:item[4],
-		 bitrate:item[5],
-		 runningtime:item[6],
-		 duration:item[7],
-		 playerstate:item[8],
-		 playerposition:item[9]
-		};
-	    res.partial('status.jade', status);
-	}
+    musicsource.status(function(data) {
+	res.partial('status.jade', data)
+    }, function(data) {
+	res.partial('status.jade', data)
     });
-});
-
-
-app.get('/songs', function(req,res) {
-    res.render('songindex.jade', {locals: {
-	songs:songs.all
-    }});
 });
 
 app.get('/playlist/:name', function(req,res) {
     safe_playlist = req.params.name.replace(/[^A-Za-z-_0-9 \-]/g, "")
-    runApplescriptFile('listTracks.applescript', safe_playlist, function(data) {
-	songlist = [];
-	data.split('\n').forEach(function(line_item) {
-	    item = line_item.split('\\');
-	    debugger;
-	    songlist.push(
-		{id:item[0],
-		 name:item[1],
-		 album:item[2],
-		 artist:item[3],
-		 year:item[4],
-		 bitrate:item[5],
-		 runningtime:item[6],
-		 duration:item[7]
-		});
-	});
+    musicsource.songs_in_playlist(safe_playlist, function(data) {
+	debugger;
 	res.render('songindex.jade', {locals: {
-	    songs:songlist
+	    songs:data
 	}});
+    }, function(error_data) {
+	res.render('error.jade', {locals: {error:error_data}});
     });
 });
 
 app.get('/playlists', function(req,res) {
-    runApplescriptFile('listPlaylists.applescript', '', function(data) {
-	lists = [];
-	data.split('\n').forEach(function(line_item) {
-	    item = line_item.split('\\');
-	    lists.push(
-		{id:item[0],
-		 name:item[1]
-		});
-	});
+    musicsource.all_playlists(function(data) {
 	res.render('playlists.jade', {locals: {
-	    playlists:lists
+	    playlists:data
 	}});
     });
 });
 
 app.post('/play/:id', function(req, res) {
     safe_id = req.params.id.replace(/[^0-9]/g, "")
-    playstring = 'play (every track whose database ID is ' + safe_id + ')';
-    runApplescript(playstring, function(data) {
+    musicsource.play(safe_id, function(data) {
 	res.render('play.jade');
+    }, function (error_data) {
+	res.render('error.jade', {locals: {error:error_data}});
     });
 });
 
 app.post('/stop', function(req, res) {
-    runApplescript('pause', function(data) {
+    musicsource.pause(function(data) {
 	res.render('play.jade');
+    }, function (error_data) {
+	res.render('error.jade', {locals: {error:error_data}});
     });
 });
 	      

@@ -6,7 +6,7 @@ on run argv
 	set g_stdout to {}
 	set stdout to a reference to g_stdout
 	tell application "iTunes"
-		set mySongs to get (every file track of playlist (item 1 of argv))
+		set mySongs to get (every file track of playlist id (item 1 of argv))
 	end tell
 	using terms from application "iTunes"
 		repeat with a_track in mySongs

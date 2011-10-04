@@ -1,8 +1,26 @@
-
-h2 
-  a(href="/playlists") See all playlists
-h2 Enter the name of an iTunes playlist to find a song
-p 'Music' will show all music, but might take 5-30 seconds depending on library size
-label
-  | Playlist name:
-  input
+#welcome
+#image
+p
+ a(href="/playlists") See all playlists
+#fb-root
+script(src="http://connect.facebook.net/en_US/all.js")
+script
+    FB.init({ 
+      appId:'164307166987675', cookie:true, 
+      status:true, xfbml:true 
+    });
+    FB.api('/me', function(user) {
+      if (user != null) {
+        if (user.id != null) {
+          var image = document.getElementById('image');
+          var src = 'https://graph.facebook.com/' + user.id + '/picture';
+          image.innerHTML = '<img src="'+ src +'">';
+        }
+        if (user.name != null) {
+           var name = document.getElementById('welcome');
+           name.innerHTML = '<h2>Hi ' + user.name + ', welcome back.';
+        }
+      }
+    });
+div(class="fb-login-button") Login with Facebook
+  

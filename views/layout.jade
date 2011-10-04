@@ -4,7 +4,10 @@ html
     link(rel='stylesheet', href='/stylesheets.css')
     title JukeNode
     script(src="/js/zepto.js")
+    script(src="http://connect.facebook.net/en_US/all.js")
+
   body
+    #fb-root
     #main
       h1 Welcome to JukeNode
       p 
@@ -12,6 +15,10 @@ html
       #statusbox
       #container!= body
     script
+      FB.init({ 
+        appId:'164307166987675', cookie:true, 
+        status:true, xfbml:true 
+      });
       function updateStatus() {
         $('#statusbox').load('/status');
         setTimeout(function(){ updateStatus(); }, 500);

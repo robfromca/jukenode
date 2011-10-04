@@ -2,13 +2,7 @@
 #image
 p
  a(href="/playlists") See all playlists
-#fb-root
-script(src="http://connect.facebook.net/en_US/all.js")
 script
-    FB.init({ 
-      appId:'164307166987675', cookie:true, 
-      status:true, xfbml:true 
-    });
     FB.api('/me', function(user) {
       if (user != null) {
         if (user.id != null) {
@@ -22,5 +16,7 @@ script
         }
       }
     });
+
 div(class="fb-login-button") Login with Facebook
-  
+
+div(class="fb-add-to-timeline")

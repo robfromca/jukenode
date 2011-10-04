@@ -3,7 +3,17 @@ h1 Songs:
 script
   $(document).ready(function() {
     $('.playsong').live('click', function() {
-      $.post('/play/' + this.getAttribute('data-songid'));
-        });
+      var songid = this.getAttribute('data-songid');
+      $.post('/play/' + songid);
+      FB.api('/me/romeyerexpedia:listen' + 
+            '?song=http://jukenode.bigdis.com/cgi-bin/fbsong.cgi%3Fsong=' + songid ,'post',
+             function(response) {
+      if (!response || response.error) {
+        alert('Error occured' + response);
+      } else {
+        alert('Post was successful! Action ID: ' + response.id);
+      }
       });
+    });
+   });
 

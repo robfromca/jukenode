@@ -57,6 +57,8 @@ musicsource.status = function(next, error) {
 		};
 	}
 	next(status);
+    }, function(error_data) {
+	error(error_data);
     });
 }
 
@@ -71,6 +73,8 @@ musicsource.all_playlists = function(next, error) {
 		});
 	});
 	next(lists);
+    }, function(error_data) {
+	error(error_data);
     });
 }
 
